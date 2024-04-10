@@ -64,7 +64,7 @@ app.post('/send_email', (req, res) => {
 
     const mailOptions = {
         from: "anuragpandey21193@gmail.com",
-        to: ['ap1663392@gmail.com'],// Receiver's email address
+        to: ['Kismatpropertycustomer@gmail.com', 'rohitraic8@gmail.com'],// Receiver's email address
 
         subject: 'Kismat Form Submission',
         // text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nIntrestested_City: ${intrested_city}\nDo You Own A Gym : ${own_gym}\nInvestment Range: ${investment_range}\nMessage: ${message}`,
@@ -83,13 +83,12 @@ app.post('/send_email', (req, res) => {
         <td style="border: 1px solid #000; padding: 8px;">${phone}</td>
     </tr>
     <tr>
-        <th style="border: 1px solid #000; padding: 8px; text-align: left; background-color: #f2f2f2;">Phone:</th>
+        <th style="border: 1px solid #000; padding: 8px; text-align: left; background-color: #f2f2f2;">Area:</th>
         <td style="border: 1px solid #000; padding: 8px;">${area}</td>
     </tr>
     
    
 </table>
-
         `,
     };
 
@@ -106,12 +105,7 @@ app.post('/send_email', (req, res) => {
 });
 
 
-
-
-
-
 app.listen(port, () => {
-
     console.log('Server is up on port ' + port)
 })
 
