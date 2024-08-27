@@ -6,6 +6,14 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+
+
+
+const fs = require("fs");
+const https = require("https");
+const http = require("http");
+const path = require('path')
+
 const cookieParser = require('cookie-parser');
 const nodemailer = require("nodemailer");
 const user = require('./modal/user');
@@ -92,7 +100,7 @@ app.post('/send_otp', async (req, res) => {
         // Generate a random 6-digit OTP
         const otp = Math.floor(100000 + Math.random() * 900000);
 
-        let url = `http://91.108.105.7/api/v2/SendSMS?SenderId=JDMGPL&Is_Unicode=false&Is_Flash=false&Message=Dear%20User%20Your%20Login%20OTP%20is%20${otp}%20JDMGPL&MobileNumbers=91${phone}&ApiKey=cq9GcyKZvfszs%2BYHGwOwTuKuGMQixXkAhftMttgKOjI%3D&ClientId=040bee8a-801c-4bf0-8b55-37b7fb85896b`;
+        let url = `https://api.shinenetcore.in/api/v2/SendSMS?SenderId=JDMGPL&Is_Unicode=false&Is_Flash=false&Message=Dear%20User%20Your%20Login%20OTP%20is%20${otp}%20JDMGPL&MobileNumbers=91${phone}&ApiKey=cq9GcyKZvfszs%2BYHGwOwTuKuGMQixXkAhftMttgKOjI%3D&ClientId=040bee8a-801c-4bf0-8b55-37b7fb85896b`;
 
         const response = await axios.get(url);
 
@@ -101,9 +109,9 @@ app.post('/send_otp', async (req, res) => {
             // Save phone number and OTP to MongoDB
             const newPhone = new PhoneModal({ phone, otp });
             await newPhone.save();
-            res.json({ success: 1, message: 'OTP sent successfully', otp: otp });
+            res.json({ success: 1, message: 'OTP sent successfully' });
         } else {
-            res.status(500).json({ success: 0, message: 'Failed to send OTP', otp: otp });
+            res.status(500).json({ success: 0, message: 'Failed to send OTP' });
         }
     } catch (error) {
         console.error('Error:', error);
@@ -128,7 +136,7 @@ app.post('/verify_otp', async (req, res) => {
             res.json({ success: 1, message: 'Phone number verified ' });
         } else {
             // OTP did not match or phone number not found
-            res.status(400).json({ success: 0, message: 'Invalid OTP' });
+            res.status(200).json({ success: 0, message: 'Invalid OTP' });
         }
     } catch (error) {
         console.error('Error:', error);
@@ -149,8 +157,8 @@ app.post('/send_email', async (req, res) => {
 
         const mailOptions = {
             from: "anuragpandey21193@gmail.com",
-            // to: ['Kismatpropertycustomer@gmail.com', 'rohitraic8@gmail.com'],
-            to: 'ap1663392@gmail.com',
+            to: ['Kismatpropertycustomer@gmail.com', 'rohitraic8@gmail.com'],
+
             subject: 'Kismat Form Submission',
             html: `
                 <table style="border: 1px solid #000; border-collapse: collapse; width: 50%;">
@@ -195,14 +203,27 @@ app.post('/send_email', async (req, res) => {
 
 
 
+let filePath = path.join(__dirname, './cert.pem');
+const certificate = fs.readFileSync(filePath, 'utf8');
+let filePath1 = path.join(__dirname, './private.key');
+const pvtkey = fs.readFileSync(filePath1, 'utf8');
+const options = {
+    key: pvtkey,
+    cert: certificate,
+};
+https.createServer(options, app)
+    .listen(port, function (req, res) {
+        connect()
+        console.log("Server started at port https " + port);
+    });
 
 
 
 
-app.listen(port, () => {
-    connect()
-    console.log('Server is up on port ' + port)
-})
+// app.listen(port, () => {
+//     connect()
+//     console.log('Server is up on port ' + port)
+// })
 
 
 
